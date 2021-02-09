@@ -8,10 +8,14 @@ import java.util.List;
 public class AddressBook {
 
     @Override
-    public boolean equals (Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        return this.equals(obj);
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || !obj.getClass().getName().equals(this.getClass().getName())) return false;
+        AddressBook testBook = (AddressBook) obj;
+        if (testBook.book.equals(this.book)) {
+            return true;
+        }
+        return false;
     }
 
     public Map<String, Address> book = new HashMap<>();
@@ -49,21 +53,12 @@ public class AddressBook {
     }
 
     public void changeAddress(String surname, Address newHomeAddress) {
-        book.remove(surname);
         book.put(surname, newHomeAddress);
     }
 
     public Object getAddress(String surname) {
-        if (book.containsKey(surname)) return book.get(surname);
-        else return null;
+        return book.getOrDefault(surname, null);
     }
 
-    public List<String> listOfPeople(Address address) {
-        ArrayList<String> peopleList = new ArrayList<>();
-        for (Map.Entry<String, Address> entry : book.entrySet()) {
-            if (entry.getValue().equals(address)) peopleList.add(entry.getKey());
-        }
-        return peopleList;
-    }
 
 }
