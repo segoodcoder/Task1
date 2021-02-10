@@ -4,60 +4,60 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class AddressBookTest extends TestCase {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-
-    @Test
-    public void tearDown() throws Exception {
-    }
+public class AddressBookTest {
 
     @Test
     public void testAddAddress() {
-        AddressBook expected = new AddressBook();
+        Map<String, AddressBook.Address> expected = new HashMap<>();
         AddressBook actual = new AddressBook();
         AddressBook.Address testAddress = new AddressBook.Address("via Sempione Nord", 91, 1);
         AddressBook.Address testAddress_2 = new AddressBook.Address("via Leopardi", 12, 4);
-        expected.book.put("Kiselev", testAddress);
-        expected.book.put("Kiseleva", testAddress_2);
+        expected.put("Kiselev", testAddress);
+        expected.put("Kiseleva", testAddress_2);
         actual.addAddress("Kiselev", testAddress);
         actual.addAddress("Kiseleva", testAddress_2);
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual.getBook());
     }
+
 
     @Test
     public void testDeleteAddress() {
-        AddressBook expected = new AddressBook();
+        Map<String, AddressBook.Address> expected = new HashMap<>();
         AddressBook actual = new AddressBook();
         AddressBook.Address addressForDelete = new AddressBook.Address("via Fratelli Omarini", 14, 76);
         AddressBook.Address addressNotForDelete = new AddressBook.Address("via Principe de Piemonte", 3, 4);
-        expected.book.put("Kiselev", addressForDelete);
-        expected.book.put("Kiseleva", addressForDelete);
-        expected.book.put("Gladenko", addressNotForDelete);
-        actual.book.put("Kiselev", addressForDelete);
-        actual.book.put("Kiseleva", addressForDelete);
-        actual.book.put("Gladenko", addressNotForDelete);
-        expected.book.remove("Kiselev");
+        expected.put("Kiselev", addressForDelete);
+        expected.put("Kiseleva", addressForDelete);
+        expected.put("Gladenko", addressNotForDelete);
+        actual.addAddress("Kiselev", addressForDelete);
+        actual.addAddress("Kiseleva", addressForDelete);
+        actual.addAddress("Gladenko", addressNotForDelete);
+        expected.remove("Kiselev");
         actual.deleteAddress("Kiselev");
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual.getBook());
 
     }
 
     @Test
     public void testChangeAddress() {
-        AddressBook expected = new AddressBook();
+        Map<String, AddressBook.Address> expected = new HashMap<>();
         AddressBook actual = new AddressBook();
         AddressBook.Address addressForDelete = new AddressBook.Address("via Fratelli Omarini", 14, 76);
         AddressBook.Address addressNew = new AddressBook.Address("via Principe de Piemonte", 3, 4);
-        expected.book.put("Kiselev", addressForDelete);
-        expected.book.put("Kiseleva", addressForDelete);
-        expected.book.put("Gladenko", addressNew);
-        actual.book.put("Kiselev", addressForDelete);
-        actual.book.put("Kiseleva", addressForDelete);
-        actual.book.put("Gladenko", addressNew);
-        expected.book.remove("Kiselev");
-        expected.book.put("Kiselev",addressNew);
+        expected.put("Kiselev", addressForDelete);
+        expected.put("Kiseleva", addressForDelete);
+        expected.put("Gladenko", addressNew);
+        actual.addAddress("Kiselev", addressForDelete);
+        actual.addAddress("Kiseleva", addressForDelete);
+        actual.addAddress("Gladenko", addressNew);
+        expected.put("Kiselev", addressNew);
         actual.changeAddress("Kiselev", addressNew);
-        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual.getBook());
     }
 
     @Test
@@ -65,12 +65,51 @@ public class AddressBookTest extends TestCase {
         AddressBook toGet = new AddressBook();
         AddressBook.Address toGetAd = new AddressBook.Address("via Gilberto Borromeo", 8, 1);
         AddressBook.Address toGetAd2 = new AddressBook.Address("Dvorets", 1, 1);
-        toGet.book.put("Kiselev", toGetAd);
-        toGet.book.put("Putin", toGetAd2);
+        toGet.addAddress("Kiselev", toGetAd);
+        toGet.addAddress("Putin", toGetAd2);
+        Assert.assertEquals(toGet.getAddress("Putin"), toGetAd2);
+        Assert.assertEquals(toGet.getAddress("Kiselev"), toGetAd);
     }
 
     @Test
-    public void testListOfPeople() {
+    public void testListByStreet() {
+        AddressBook toTest = new AddressBook();
+        List<String> testList = new ArrayList<>();
+        List<String> testList1;
+        toTest.addAddress("Kiselev", new AddressBook.Address("Kostromskoy ave", 44, 53));
+        toTest.addAddress("Ivanov", new AddressBook.Address("Kostromskoy ave", 38, 11));
+        toTest.addAddress("Sergeev", new AddressBook.Address("Yaroslavsky ave", 76, 21));
+        testList.add("Kiselev");
+        testList.add("Ivanov");
+        testList1 = toTest.listByStreet("Kostromskoy ave");
+        Assert.assertEquals(testList, testList1);
+    }
 
+    @Test
+    public void testListByHouse() {
+        AddressBook toTest = new AddressBook();
+        List<String> testList = new ArrayList<>();
+        List<String> testList1;
+        toTest.addAddress("Kiselev", new AddressBook.Address("Kostromskoy ave", 44, 53));
+        toTest.addAddress("Ivanov", new AddressBook.Address("Kostromskoy ave", 44, 11));
+        toTest.addAddress("Sergeev", new AddressBook.Address("Yaroslavsky ave", 76, 21));
+        testList.add("Kiselev");
+        testList.add("Ivanov");
+        testList1 = toTest.listByHouse("Kostromskoy ave", 44);
+        Assert.assertEquals(testList, testList1);
+    }
+
+    @Test
+    public void testListByFlat() {
+        AddressBook toTest = new AddressBook();
+        List<String> testList = new ArrayList<>();
+        List<String> testList1;
+        toTest.addAddress("Kiselev", new AddressBook.Address("Kostromskoy ave", 44, 53));
+        toTest.addAddress("Kiseleva", new AddressBook.Address("Kostromskoy ave", 44, 53));
+        toTest.addAddress("Sergeev", new AddressBook.Address("Yaroslavsky ave", 76, 21));
+        testList.add("Kiseleva");
+        testList.add("Kiselev");
+        testList1 = toTest.listByFlat("Kostromskoy ave", 44, 53);
+        Assert.assertEquals(testList, testList1);
     }
 }

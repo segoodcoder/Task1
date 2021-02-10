@@ -2,8 +2,8 @@ package main_task1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public class AddressBook {
 
@@ -12,13 +12,15 @@ public class AddressBook {
         if (this == obj) return true;
         if (obj == null || !obj.getClass().getName().equals(this.getClass().getName())) return false;
         AddressBook testBook = (AddressBook) obj;
-        if (testBook.book.equals(this.book)) {
-            return true;
-        }
-        return false;
+        return testBook.book.equals(this.book);
     }
 
-    public Map<String, Address> book = new HashMap<>();
+    private final Map<String, Address> book = new HashMap<>();
+    private final List<String> list = new ArrayList<>();
+
+    public Map<String, Address> getBook() {
+        return book;
+    }
 
     public static class Address {
         private final String street;
@@ -60,5 +62,34 @@ public class AddressBook {
         return book.getOrDefault(surname, null);
     }
 
+    public List<String> listByStreet(String street) {
+        for (Map.Entry<String, Address> entry : book.entrySet()) {
+            if (entry.getValue().getStreet().equals(street)) {
+                list.add(entry.getKey());
+            }
+        }
+        return list;
+    }
 
+    public List<String> listByHouse(String street, int house) {
+        for (Map.Entry<String, Address> entry : book.entrySet()) {
+            if (entry.getValue().getStreet().equals(street) && entry.getValue().getHouse() == house) {
+                list.add(entry.getKey());
+            }
+        }
+        return list;
+    }
+
+    public List<String> listByFlat(String street, int house, int flat) {
+        for (Map.Entry<String, Address> entry: book.entrySet()) {
+            if (entry.getValue().getStreet().equals(street)) {
+                if (entry.getValue().getHouse() == house) {
+                    if (entry.getValue().getFlat() == flat) {
+                        list.add(entry.getKey());
+                    }
+                }
+            }
+        }
+        return list;
+    }
 }
