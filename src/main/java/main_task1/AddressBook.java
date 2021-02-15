@@ -1,25 +1,31 @@
 package main_task1;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AddressBook {
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || !obj.getClass().getName().equals(this.getClass().getName())) return false;
-        AddressBook testBook = (AddressBook) obj;
-        return testBook.book.equals(this.book);
+        if (obj instanceof AddressBook) {
+            AddressBook testBook = (AddressBook) obj;
+            return testBook.book.equals(this.book);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = 1;
+        result = 31 * result + book.hashCode();
+        return result;
     }
 
     private final Map<String, Address> book = new HashMap<>();
-    private final List<String> list = new ArrayList<>();
 
     public Map<String, Address> getBook() {
-        return book;
+        return Collections.unmodifiableMap(book);
     }
 
     public static class Address {
@@ -47,7 +53,7 @@ public class AddressBook {
     }
 
     public void addAddress(String surname, Address homeAddress) {
-        book.put(surname, homeAddress);
+        if (!book.containsKey(surname)) book.put(surname, homeAddress);
     }
 
     public void deleteAddress(String surname) {
@@ -55,14 +61,15 @@ public class AddressBook {
     }
 
     public void changeAddress(String surname, Address newHomeAddress) {
-        book.put(surname, newHomeAddress);
+        if (book.containsKey(surname)) book.put(surname, newHomeAddress);
     }
 
-    public Object getAddress(String surname) {
+    public Address getAddress(String surname) {
         return book.getOrDefault(surname, null);
     }
 
     public List<String> listByStreet(String street) {
+        List<String> list = new ArrayList<>();
         for (Map.Entry<String, Address> entry : book.entrySet()) {
             if (entry.getValue().getStreet().equals(street)) {
                 list.add(entry.getKey());
@@ -72,6 +79,7 @@ public class AddressBook {
     }
 
     public List<String> listByHouse(String street, int house) {
+        List<String> list = new ArrayList<>();
         for (Map.Entry<String, Address> entry : book.entrySet()) {
             if (entry.getValue().getStreet().equals(street) && entry.getValue().getHouse() == house) {
                 list.add(entry.getKey());
@@ -81,6 +89,7 @@ public class AddressBook {
     }
 
     public List<String> listByFlat(String street, int house, int flat) {
+        List<String> list = new ArrayList<>();
         for (Map.Entry<String, Address> entry: book.entrySet()) {
             if (entry.getValue().getStreet().equals(street)) {
                 if (entry.getValue().getHouse() == house) {
