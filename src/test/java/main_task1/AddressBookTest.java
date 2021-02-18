@@ -22,6 +22,7 @@ public class AddressBookTest {
         actual.addAddress("Kiselev", testAddress);
         actual.addAddress("Kiseleva", testAddress_2);
         Assert.assertEquals(expected, actual.getBook());
+        Assert.assertFalse(actual.addAddress("Kiselev",testAddress));
     }
 
 
@@ -40,7 +41,7 @@ public class AddressBookTest {
         expected.remove("Kiselev");
         actual.deleteAddress("Kiselev");
         Assert.assertEquals(expected, actual.getBook());
-
+        Assert.assertFalse(actual.deleteAddress("Something"));
     }
 
     @Test
@@ -58,6 +59,7 @@ public class AddressBookTest {
         expected.put("Kiselev", addressNew);
         actual.changeAddress("Kiselev", addressNew);
         Assert.assertEquals(expected, actual.getBook());
+        Assert.assertFalse(actual.changeAddress("Something", addressForDelete));
     }
 
     @Test

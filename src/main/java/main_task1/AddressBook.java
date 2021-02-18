@@ -4,6 +4,7 @@ import java.util.*;
 
 public class AddressBook {
 
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -52,16 +53,28 @@ public class AddressBook {
         }
     }
 
-    public void addAddress(String surname, Address homeAddress) {
-        if (!book.containsKey(surname)) book.put(surname, homeAddress);
+    public boolean addAddress(String surname, Address homeAddress) {
+        if (!book.containsKey(surname)) {
+            book.put(surname, homeAddress);
+            return true;
+        }
+        return false;
     }
 
-    public void deleteAddress(String surname) {
-        book.remove(surname);
+    public boolean deleteAddress(String surname) {
+        if (book.containsKey(surname)) {
+            book.remove(surname);
+            return true;
+        }
+        return false;
     }
 
-    public void changeAddress(String surname, Address newHomeAddress) {
-        if (book.containsKey(surname)) book.put(surname, newHomeAddress);
+    public boolean changeAddress(String surname, Address newHomeAddress) {
+        if (book.containsKey(surname)) {
+            book.put(surname, newHomeAddress);
+            return true;
+        }
+        return false;
     }
 
     public Address getAddress(String surname) {
